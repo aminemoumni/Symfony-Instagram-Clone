@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts!{% endblock %}
+
+{% block body %}
+    <div class="card-group py-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{user.fullname}}
+                    
+                </h5>
+                {% if is_granted('ROLE_USER') and user != app.user %}
+                    {% if user.followers.contains(app.user) == false %}
+                        <a href="{{path('following_follow', {'id': user.id})}}" class="btn btn-outline-primary">Follow</a>
+                    {% else %}
+                        <a href="{{path('following_unfollow', {'id': user.id})}}" class="btn btn-outline-danger">Unfollow</a>
+                    {% endif %} 
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="card-group py-2">
+        <div class="card">
+            <div class="card-header">
+                <h5>Followers ({{ user.followers.count }})</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for follower in user.followers %}
+                <li class="list-group-item">
+                    <a href="{{ path('micro_post_user', {'email': follower.email}) }}">
+                        {{follower.fullname}}
+                    </a>
+                </li>
+                    
+                {% endfor%}
+
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h5>Following ({{ user.following.count }})</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for followe in user.following %}
+                <li class="list-group-item">
+                    <a href="{{ path('micro_post_user', {'email': followe.email}) }}">
+                        {{followe.fullname}}
+                    </a>
+                </li>
+                    
+                {% endfor%}
+
+            </ul>
+        </div>
+    </div>
+    {% for post in posts %}
+        {% if is_granted('Edit', post) %} 
+        <!-- method Edit and Delete are on the security/voter/MicroPostVote
+             to do permision to not login cant edit or delete
+            u can only edit and delete your own POSTS -->
+            <small class="text-right mt-3">
+                <a href="{{path('micro_post_edit', {'id': post.id})}}">Edit</a>
+            </small> 
+        {% endif %}
+        {% if is_granted('Delete', post) %}
+            <small class="text-right mt-3">
+                <a href="{{path('micro_post_delete', {'id': post.id})}}">Delete</a>
+            </small> 
+        {% endif %}
+       
+            {{include('micro_post/rawpost.html.twig', {'post': post})}}
+         
+        
+    {% endfor %}
+
+{% endblock %}

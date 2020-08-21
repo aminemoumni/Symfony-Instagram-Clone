@@ -1,0 +1,24 @@
+<div class="media text-muted pt-3">
+    {% set initials = post.user.fullName|split(' ') %}
+    <img data-src="holder.js/32x32?text={{attribute(initials,0)|first}}{{attribute(initials,1)|first}}&bg=e83e8c&fg=fff&size=8" class="mr-2 rounded" alt="">
+    <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+         <span class="d-block">
+            <a href="{{path('micro_post_user', {'email': post.user.email } )}}">
+                <strong class="text-gray-dark">{{post.user.fullname}} 
+                    <!--user is a private method on the entity MicroPost to access to User Entity onetomany--> 
+                </strong>
+            </a>
+            <small> {{post.time|date('d/m/y')}}</small>
+        </span>
+        <a href="{{path('micro_post_post', {'id': post.id})}}">{{post.text}}</a> 
+    </p>
+</div>        
+<!-- 
+      {% set initials = post.user.fullname|split(' ') %}
+      Amine moumni the full name
+      attribute(initials,0) = Amine
+      attribute(initials,1) = Moumni
+
+      attribute(initials,0)|first = A
+      attribute(initials,1)|first = M
+-->

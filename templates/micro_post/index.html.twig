@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts!{% endblock %}
+
+{% block body %}
+    {% for message in app.flashes('notice') %}
+        <div class="alert alert-success" role="alert">
+            {{ message }} 
+        </div>
+    {% endfor %}
+    {% if usersToFollow|length > 0 %}
+        <p>You currently do not follow anyone, you might find these users interesting: </p>
+
+        {% for userToFollow in usersToFollow %}
+            <a href="{{ path('following_follow', {'id': userToFollow.id}) }}">
+                @{{ userToFollow.email }},</a>
+        {% endfor %}
+    {% else %}
+<h6 class="border-bottom broder-gray pb-2 mb-0">Recent update</h6>
+    {% for post in posts %}
+        {% if is_granted('Edit', post) %} 
+        <!-- method Edit and Delete are on the security/voter/MicroPostVote
+             to do permision to not login cant edit or delete
+            u can only edit and delete your own POSTS -->
+            <small class="text-right mt-3">
+                <a href="{{path('micro_post_edit', {'id': post.id})}}">Edit</a>
+            </small> 
+        {% endif %}
+        {% if is_granted('Delete', post) %}
+            <small class="text-right mt-3">
+                <a href="{{path('micro_post_delete', {'id': post.id})}}">Delete</a>
+            </small> 
+        {% endif %}
+       
+            {{include('micro_post/rawpost.html.twig', {'post': post})}}
+         
+        
+    {% endfor %}
+   {% endif %}
+{% endblock %}
